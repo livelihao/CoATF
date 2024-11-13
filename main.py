@@ -103,7 +103,7 @@ def main(args):
             if args.out:
                 torch.save(model.state_dict(), f"{config.model_path}/{args.model}_{args.factor_num}_{best_mae:.4f}.pt")
     print(f"Best Test MAE: {best_mae:.4f}")
-
+ 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lr", type=float, default=0.001, help="learn rate")
