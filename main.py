@@ -28,22 +28,19 @@ def seed_worker(worker_id):
     random.seed(worker_seed)
 
 def set_seed(seed=2024):
-    """设置所有随机种子保证实验可重复"""
-    # 基础种子设置
+    
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
     
-    # PyTorch CPU设置
     torch.manual_seed(seed)
     
-    # PyTorch GPU设置
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
-        torch.backends.cudnn.deterministic = True    # 确保卷积算法确定性
-        torch.backends.cudnn.benchmark = False       # 关闭自动寻找最优卷积算法
-        torch.backends.cudnn.enabled = False         # 完整确定性需要关闭CuDNN
+        torch.backends.cudnn.deterministic = True    
+        torch.backends.cudnn.benchmark = False       
+        torch.backends.cudnn.enabled = False         
     
     # 额外设置避免NVIDIA库的随机性
     os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
@@ -87,30 +84,22 @@ def test_model(model, test_loader, loss_function, device):
 
     with torch.no_grad():
         for batch_x, batch_y in test_loader:
-            # 数据转移至设备
+
             batch_x, batch_y = batch_x.to(device), batch_y.to(device)
-            
-            # 获取预测结果
             prediction = model(batch_x[:, 0], batch_x[:, 1], batch_x[:, 2])
-            
-            # 计算当前batch的样本数
             batch_size = batch_y.size(0)
             total_samples += batch_size
-            
-            # 计算损失
+
             loss = loss_function(prediction, batch_y)
-            total_loss += loss.item() * batch_size  # 累积加权损失
-            
-            # 计算绝对误差
+            total_loss += loss.item() * batch_size  
+
             abs_errors = torch.abs(prediction - batch_y)
             total_abs_error += abs_errors.sum().item()
-            
-            # 累积平方误差
+
             squared_errors = (prediction - batch_y) ** 2
             total_squared_error += squared_errors.sum().item()
 
-    # 计算最终指标
-    avg_loss = total_loss / total_samples  # 加权平均损失
+    avg_loss = total_loss / total_samples  
     mae = total_abs_error / total_samples
     rmse = (total_squared_error / total_samples) ** 0.5
 
@@ -121,8 +110,7 @@ def main(args):
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() and args.gpu else "cpu")
     
-    # 加载完整数据集
-    full_data, test_data, dataHandler = prepare_data(1.0)  # 使用全部数据
+    full_data, test_data, dataHandler = prepare_data(1.0)  
     user_num, item_num, cont_num = dataHandler.userIDMapper.getNumIDs(), dataHandler.itemIDMapper.getNumIDs(), dataHandler.contIDMapper.getNumIDs()
 
     full_dataset = TensorDataset(
@@ -130,7 +118,7 @@ def main(args):
         torch.tensor(dataHandler.trainData_y).float()
     )
     
-    kfold = 10 
+    kfold = 5 
     kfold = KFold(n_splits=kfold, shuffle=True, random_state=args.seed)
     fold_results = {'mae': [], 'rmse': []}
     
@@ -141,7 +129,6 @@ def main(args):
         train_subset = Subset(full_dataset, train_idx)
         val_subset = Subset(full_dataset, val_idx)
         
-        # 创建数据加载器
         train_loader = DataLoader(
             train_subset,
             batch_size=args.batch_size,
@@ -166,7 +153,7 @@ def main(args):
             
             print(f"Epoch {epoch+1}, Train Loss: {train_loss:.4f}, Val MAE: {val_mae:.4f}, Val RMSE: {val_rmse:.4f}")
             
-            # 早停机制
+            # early stopping
             if val_mae < best_mae:
                 best_mae = val_mae
                 best_rmse = val_rmse
