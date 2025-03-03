@@ -121,15 +121,10 @@ def load_data(train_ratio):
     
     return train_data, test_data, n_total
 
-def RegLoss(parameters):
-    """RegLoss, L2 regularization on model parameters"""
-    
-    reg_loss = None
-    for W in parameters:
-        if reg_loss is None:
-            reg_loss = W.norm(2)
-        else:
-            reg_loss = reg_loss + W.norm(2)
+def RegLoss(model):
+    reg_loss = 0
+    for param in model.parameters():
+        reg_loss += torch.norm(param, p=2)
     return reg_loss
 
 # load_data()

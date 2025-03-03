@@ -1,9 +1,11 @@
 import os
+from pathlib import Path 
 
 dataset = 'mov100k'
 assert dataset in ['Ciao', 'epinions', 'mov100k', 'Synthetic', 'Synthetic-r-10', 'Synthetic-r-200', 'Synthetic-r-4-NL']
 
-meta_path = '/home/sdust307/Disk2/lh/nonlinear'
+meta_path = str(Path(__file__).resolve().parent)
+# '/media/sdust307/disk2/lh/COATF'
 
 main_path = meta_path + '/datas/' + dataset + '/'
 
@@ -25,6 +27,6 @@ if dataset == 'gowalla':
 
 model_path = meta_path + '/models/'
 
-seed = 12
+seed = 2024
 
 train_ratio = 0.9
