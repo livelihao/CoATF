@@ -22,8 +22,7 @@ class COATF(nn.Module):
         self.conv11 = nn.Conv2d(in_channels=1, out_channels=nc, kernel_size=(1, 4))
         self.conv12 = nn.Conv2d(in_channels=nc, out_channels=nc, kernel_size=(factor_num, 1))
 
-        self.att = Attention(nc, out_dim=nc, n_head=1, score_function="mlp", dropout=dropout)
-
+        self.att = Attention(nc, out_dim=nc, dropout=dropout)
         self.predict_layer1 = nn.Linear(nc, 1)
         self.dropout = nn.Dropout(p=dropout)
 

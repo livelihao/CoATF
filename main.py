@@ -118,7 +118,7 @@ def main(args):
         torch.tensor(dataHandler.trainData_y).float()
     )
     
-    kfold = 5 
+    kfold = args.kfold
     kfold = KFold(n_splits=kfold, shuffle=True, random_state=args.seed)
     fold_results = {'mae': [], 'rmse': []}
     
@@ -178,14 +178,14 @@ if __name__ == "__main__":
     parser.add_argument("--lr", type=float, default=0.001, help="learn rate")
     parser.add_argument("--dropout", type=float, default=0.3, help="dropout")
     parser.add_argument("--batch_size", type=int, default=64, help="batch size for training")
-    parser.add_argument("--epochs", type=int, default=20, help="training epoches")
+    parser.add_argument("--epochs", type=int, default=200, help="training epoches")
+    parser.add_argument("--kfold", type=int, default=5, help="kfold")
     parser.add_argument("--factor_num", '-r', type=int, default=30, help="predictive factors numbers in the model")
     parser.add_argument("--out", type=bool, default=True, help="is or not output model")
     parser.add_argument("--reg", type=float, default=0.01, help="L2 regularization reg")
     parser.add_argument("--model", type=str, default="COATF", help="which of models")
     parser.add_argument("--optim", type=str, default="Adam", help="optimizer:[Adam, SGD]")
     parser.add_argument("--seed", type=int, default=2024, help="seed")
-    parser.add_argument("--train_ratio", default=0.9, help="seed")
     parser.add_argument("--gpu", type=str, default=0)
     parser.add_argument("--nonlinear", type=str, default=None)
     args = parser.parse_args()

@@ -47,18 +47,28 @@ class Attention(nn.Module):
         mb_size = k.shape[0]  # 64
         k_len = k.shape[1] # 1
         q_len = q.shape[1] # 1
+        # print(q.shape)  # 64, 1, 32
 
-        kx = self.w_k(k).view(mb_size, k_len, self.n_head, self.hidden_dim) # bs,1,1,10
-        kx = kx.permute(2, 0, 1, 3).contiguous().view(-1, k_len, self.hidden_dim) # bs,1,1,10
+        # k: (?, k_len, embed_dim,) 1  32
+        # q: (?, q_len, embed_dim,) 1, 32
+        # kx: (n_head*?, k_len, hidden_dim)  8*64， 1， 4
+        # qx: (n_head*?, q_len, hidden_dim)
+        # score: (n_head*?, q_len, k_len,)
+        # output: (?, q_len, out_dim,)
+        kx = self.w_k(k).view(mb_size, k_len, self.n_head, self.hidden_dim) # bs,1,1,32
 
-        qx = self.w_q(q).view(mb_size, q_len, self.n_head, self.hidden_dim) # bs,1,1,10
-        qx = qx.permute(2, 0, 1, 3).contiguous().view(-1, q_len, self.hidden_dim) # bs,1,1,10
+        kx = kx.permute(2, 0, 1, 3).contiguous().view(-1, k_len, self.hidden_dim) # bs,1,1,32
+        # print(kx.shape) (n_head*?, k_len, hidden_dim) 8*64， 1， 4
+        # exit()
+        qx = self.w_q(q).view(mb_size, q_len, self.n_head, self.hidden_dim) # bs,1,1,32
+        qx = qx.permute(2, 0, 1, 3).contiguous().view(-1, q_len, self.hidden_dim) # bs,1,1,32
 
-        kt = kx.permute(0, 2, 1) # bs,10,1
-        score = torch.bmm(kt,qx) # bs, 10, 10
-        score = F.softmax(score, dim=-1) # bs, 10, 10
-        output = torch.bmm(kx,score) # bs, 10, 10
+        kt = kx.permute(0, 2, 1) # bs,32,1
+        score = torch.bmm(kt,qx) # bs, 32, 32
+        score = F.softmax(score, dim=-1) # bs, 32, 23
+
+        output = torch.bmm(kx,score) # bs, 1, 32
 
         output = self.proj(output)  # (?, q_len, out_dim)
-        output = self.dropout(output)
+        output = self.dropout(output) # bs, 1, 32
         return output, score
