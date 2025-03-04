@@ -50,7 +50,7 @@ dataset = "Ciao"  # for Ciao
 python main.py --kfold 10
 
 # 5-fold cross-validation 
-python main.py --dataset ml-1m --kfold 5
+python main.py --kfold 5
 ```
 
 ## Experimental Results
@@ -60,7 +60,7 @@ python main.py --dataset ml-1m --kfold 5
 | **RMSE**  | 0.9304 ± 0.0034  | 0.9317 ± 0.0039  |
 | **MAE**   | 0.6859 ± 0.0026  | 0.6873 ± 0.0017  |
 
-### MovieLens-1M Dataset
+### MovieLens Dataset
 | Metric    | 10-fold          | 5-fold           |
 |-----------|------------------|------------------|
 | **RMSE**  | 0.9415 ± 0.0012  | 0.9436 ± 0.0013  |
