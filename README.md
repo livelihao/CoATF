@@ -53,20 +53,6 @@ python main.py --kfold 10
 python main.py --kfold 5
 ```
 
-## Experimental Results
-### Ciao Dataset
-| Metric    | 10-fold          | 5-fold           |
-|-----------|------------------|------------------|
-| **RMSE**  | 0.9304 ± 0.0034  | 0.9317 ± 0.0039  |
-| **MAE**   | 0.6859 ± 0.0026  | 0.6873 ± 0.0017  |
-
-### MovieLens Dataset
-| Metric    | 10-fold          | 5-fold           |
-|-----------|------------------|------------------|
-| **RMSE**  | 0.9415 ± 0.0012  | 0.9436 ± 0.0013  |
-| **MAE**   | 0.7400 ± 0.0011  | 0.7425 ± 0.0011  |
-
-
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ``` 

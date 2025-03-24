@@ -147,6 +147,7 @@ def main(args):
         optimizer = Adam(model.parameters(), lr=args.lr, weight_decay=args.reg)
         
         best_mae = float('inf')
+        best_rmse = float('inf')
         for epoch in range(args.epochs):
             train_loss = train_model(model, train_loader, optimizer, loss_function, device)
             val_loss, val_mae, val_rmse = test_model(model, val_loader, loss_function, device)
@@ -156,17 +157,18 @@ def main(args):
             # early stopping
             if val_mae < best_mae:
                 best_mae = val_mae
-                best_rmse = val_rmse
                 patience = 0
             else:
                 patience += 1
-                if patience >= 5:
+                if patience >= 20:
                     print("Early stopping")
                     break
+            if val_rmse < best_rmse:
+                best_rmse = val_rmse
         
         fold_results['mae'].append(best_mae)
         fold_results['rmse'].append(best_rmse)
-        print(f"Fold {fold+1} Best - MAE: {best_mae:.4f}, RMSE: {best_rmse:.4f}")
+        print(f"Best - MAE: {best_mae:.4f}, RMSE: {best_rmse:.4f}")
     
     print("\n=== Cross Validation Results ===")
     print(f"MAE: {np.mean(fold_results['mae']):.4f} ± {np.std(fold_results['mae']):.4f}")
@@ -185,7 +187,7 @@ if __name__ == "__main__":
     parser.add_argument("--reg", type=float, default=0.01, help="L2 regularization reg")
     parser.add_argument("--model", type=str, default="COATF", help="which of models")
     parser.add_argument("--optim", type=str, default="Adam", help="optimizer:[Adam, SGD]")
-    parser.add_argument("--seed", type=int, default=2024, help="seed")
+    parser.add_argument("--seed", type=int, default=2025, help="seed")
     parser.add_argument("--gpu", type=str, default=0)
     parser.add_argument("--nonlinear", type=str, default=None)
     args = parser.parse_args()
