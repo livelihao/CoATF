@@ -22,7 +22,7 @@ matplotlib >= 3.5
 
 ## Installation
 ```bash
-git clone https://github.com/yourusername/CoATF.git
+git clone https://github.com/livelihao/CoATF.git
 cd CoATF
 ```
 
