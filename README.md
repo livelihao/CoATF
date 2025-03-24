@@ -38,7 +38,7 @@ dataset = "Ciao"  # for Ciao
 ### Training Configuration
 ```python
 --kfold        # Cross-validation folds (5 or 10)
---seed 2024    # Random seed
+--seed 2025    # Random seed
 --rank 30      # Tensor factorization rank
 --epochs 200    # Maximum training epochs
 --batch_size 64 # Training batch size
